@@ -1,0 +1,45 @@
+<div class="container">
+    <!-- Logo -->
+    <img src="https://static.wixstatic.com/media/9bb57e_0451cf48a8984754a0f1ee75b6278b21~mv2.png"
+         alt="SoOne logo"
+         class="logo" />
+
+    <!-- Log email -->
+    <div class="card">
+        <h3>Log email</h3>
+        <p>Create an activity record for this email in SoCRM.</p>
+        <button id="logEmail">Log email</button>
+    </div>
+
+    <!-- Create task -->
+    <div class="card">
+        <h3>Create task</h3>
+        <p>Create a follow‑up task linked to this email.</p>
+        <button id="createTask">Create task</button>
+    </div>
+
+    <!-- SoOne lookup -->
+    <div class="card">
+        <h3>SoOne lookup</h3>
+        <p>Search SoCRM and tag this email with a tracking ID.</p>
+
+        <select id="entityType">
+            <option value="AC">Account</option>
+            <option value="CO">Contact</option>
+            <option value="SL">Sales Lead</option>
+            <option value="SO">Sales Opportunity</option>
+            <option value="PR">Project</option>
+            <option value="CA">Case</option>
+        </select>
+
+        <input id="searchText"
+               type="text"
+               placeholder="Search SoCRM…" />
+
+        <button id="searchSoOne">Search</button>
+
+        <div id="results"></div>
+    </div>
+
+    <pre id="output"></pre>
+</div>

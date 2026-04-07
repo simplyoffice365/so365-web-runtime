@@ -1,0 +1,106 @@
+/* Global box model fix (critical for Outlook task panes) */
+* {
+    box-sizing: border-box;
+}
+
+/* Page */
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f5f6f8;
+}
+
+/* Container */
+.container {
+    padding: 16px;
+}
+
+/* Logo */
+.logo {
+    max-width: 200px;
+    width: 100%;
+    margin: 0 auto 24px auto;
+    display: block;
+}
+
+/* Cards */
+.card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+    /* Card title */
+    .card h3 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #323130;
+    }
+
+    /* Card description */
+    .card p {
+        margin: 0 0 14px 0;
+        font-size: 13px;
+        color: #605e5c;
+        line-height: 1.4;
+    }
+
+/* Inputs & dropdowns */
+select,
+input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #c8c6c4;
+    font-size: 14px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: none;
+    background-color: #0078d4;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #106ebe;
+    }
+
+/* Lookup results */
+#results {
+    margin-top: 10px;
+}
+
+.result {
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #f3f2f1;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+    .result:hover {
+        background: #e1dfdd;
+    }
+
+/* Debug / status output */
+pre {
+    margin-top: 16px;
+    font-size: 11px;
+    color: #605e5c;
+    white-space: pre-wrap;
+}
