@@ -1,45 +1,73 @@
-<div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SoOne Capture</title>
+
+  <!-- Office.js MUST be loaded -->
+  <script
+    src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js">
+  </script>
+
+  <!-- Your styles -->
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+
+<body>
+  <div class="container">
     <!-- Logo -->
-    <img src="https://static.wixstatic.com/media/9bb57e_0451cf48a8984754a0f1ee75b6278b21~mv2.png"
-         alt="SoOne logo"
-         class="logo" />
+    <img
+      src="https://static.wixstatic.com/media/9bb57e_0451cf48a8984754a0f1ee75b6278b21~mv2.png"
+      alt="SoOne logo"
+      class="logo"
+    />
 
     <!-- Log email -->
     <div class="card">
-        <h3>Log email</h3>
-        <p>Create an activity record for this email in SoCRM.</p>
-        <button id="logEmail">Log email</button>
+      <h3>Log email</h3>
+      <p>Create an activity record for this email in SoCRM.</p>
+      <button id="logEmail">Log email</button>
     </div>
 
     <!-- Create task -->
     <div class="card">
-        <h3>Create task</h3>
-        <p>Create a follow‑up task linked to this email.</p>
-        <button id="createTask">Create task</button>
+      <h3>Create task</h3>
+      <p>Create a follow‑up task linked to this email.</p>
+      <button id="createTask">Create task</button>
     </div>
 
     <!-- SoOne lookup -->
     <div class="card">
-        <h3>SoOne lookup</h3>
-        <p>Search SoCRM and tag this email with a tracking ID.</p>
+      <h3>SoOne lookup</h3>
+      <p>Search SoCRM and tag this email with a tracking ID.</p>
 
-        <select id="entityType">
-            <option value="AC">Account</option>
-            <option value="CO">Contact</option>
-            <option value="SL">Sales Lead</option>
-            <option value="SO">Sales Opportunity</option>
-            <option value="PR">Project</option>
-            <option value="CA">Case</option>
-        </select>
+      <select id="entityType">
+        <option value="AC">Account</option>
+        <option value="CO">Contact</option>
+        <option value="SL">Sales Lead</option>
+        <option value="SO">Sales Opportunity</option>
+        <option value="PR">Project</option>
+        <option value="CA">Case</option>
+      </select>
 
-        <input id="searchText"
-               type="text"
-               placeholder="Search SoCRM…" />
+      <input
+        id="searchText"
+        type="text"
+        placeholder="Search SoCRM…"
+      />
 
-        <button id="searchSoOne">Search</button>
+      <button id="searchSoOne">Search</button>
 
-        <div id="results"></div>
+      <div id="results"></div>
     </div>
 
     <pre id="output"></pre>
-</div>
+  </div>
+
+  <!-- Your logic -->
+  <script src="assets/taskpane.js"></script>
+</body>
+</html>
