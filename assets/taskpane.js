@@ -6,109 +6,41 @@ Office.onReady(async () => {
     // 1️⃣ BASE HELPERS
     // =====================================================
 
-    const SITE_URL = "https://simplyoffice365.sharepoint.com/sites/MW12";
-
     function setStatus(text) {
         const out = document.getElementById("output");
         if (out) out.textContent = text;
     }
 
-    async function getSsoToken() {
-        return await OfficeRuntime.auth.getAccessToken({
-            allowSignInPrompt: true,
-            allowConsentPrompt: true
+    async function callApi(url, payload) {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || res.statusText);
+        }
+
+        return res.json();
     }
 
-    function spHeaders(token) {
+    function getEmailContext() {
+        const item = Office.context.mailbox.item;
+
         return {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json;odata=nometadata",
-            "Content-Type": "application/json;odata=nometadata"
+            subject: item.subject || "(No subject)",
+            from: item.from?.emailAddress?.address || null,
+            sentOn: item.dateTimeCreated || null,
+            itemId: item.itemId
         };
     }
 
     // =====================================================
-    // 2️⃣ SHAREPOINT REST FUNCTIONS
-    // =====================================================
-
-    async function createEmailActivity(token, subject) {
-        const url =
-            `${SITE_URL}/_api/web/lists/getbytitle('Activity Email')/items`;
-
-        const payload = {
-            Title: subject,
-            EmailBody: "Logged from Outlook add-in"
-        };
-
-        const res = await fetch(url, {
-            method: "POST",
-            headers: spHeaders(token),
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error(await res.text());
-    }
-
-    async function createTaskActivity(token, subject) {
-        const url =
-            `${SITE_URL}/_api/web/lists/getbytitle('Activity Task')/items`;
-
-        const payload = {
-            Title: subject,
-            Description: "Task created from Outlook email"
-        };
-
-        const res = await fetch(url, {
-            method: "POST",
-            headers: spHeaders(token),
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error(await res.text());
-    }
-
-    async function searchList(token, listName, searchText) {
-        const filter = encodeURIComponent(
-            `substringof('${searchText}', Title)`
-        );
-
-        const url =
-            `${SITE_URL}/_api/web/lists/getbytitle('${listName}')/items` +
-            `?$select=Id,Title&$filter=${filter}&$top=10`;
-
-        const res = await fetch(url, {
-            headers: spHeaders(token)
-        });
-
-        if (!res.ok) throw new Error(await res.text());
-
-        return (await res.json()).value;
-    }
-
-    async function searchSoCRM(token, entity, searchText) {
-        const map = {
-            AC: "Accounts",
-            CO: "Contacts",
-            SL: "Sales Leads",
-            SO: "Sales Opportunities",
-            PR: "Projects",
-            CR: "Cases"
-        };
-
-        const listName = map[entity];
-        if (!listName) return [];
-
-        const items = await searchList(token, listName, searchText);
-
-        return items.map(i => ({
-            id: `${entity}-${i.Id}`,
-            name: i.Title
-        }));
-    }
-
-    // =====================================================
-    // 3️⃣ UI WIRING
+    // 2️⃣ UI WIRING
     // =====================================================
 
     // ---------- Log Email ----------
@@ -116,13 +48,11 @@ Office.onReady(async () => {
     if (logBtn) {
         logBtn.onclick = async () => {
             try {
-                setStatus("Logging email...");
-                const token = await getSsoToken();
+                setStatus("Logging email…");
 
-                const item = Office.context.mailbox.item;
-                const subject = item.subject || "(No subject)";
+                const payload = getEmailContext();
+                await callApi("/api/email/log", payload);
 
-                await createEmailActivity(token, subject);
                 setStatus("✅ Email logged");
             } catch (e) {
                 setStatus(`❌ ${e.message}`);
@@ -135,11 +65,10 @@ Office.onReady(async () => {
     if (taskBtn) {
         taskBtn.onclick = async () => {
             try {
-                setStatus("Creating task...");
-                const token = await getSsoToken();
+                setStatus("Creating task…");
 
-                const subject = Office.context.mailbox.item.subject || "(No subject)";
-                await createTaskActivity(token, subject);
+                const payload = getEmailContext();
+                await callApi("/api/task/create", payload);
 
                 setStatus("✅ Task created");
             } catch (e) {
@@ -169,9 +98,12 @@ Office.onReady(async () => {
                     return;
                 }
 
-                setStatus("Searching...");
-                const token = await getSsoToken();
-                const results = await searchSoCRM(token, entity, searchText);
+                setStatus("Searching…");
+
+                const results = await callApi("/api/socrm/search", {
+                    entity,
+                    searchText
+                });
 
                 resultsDiv.innerHTML = "";
                 results.forEach(r => {
@@ -208,5 +140,4 @@ Office.onReady(async () => {
             item.subject.setAsync(`${subject} ${tag}`);
         });
     }
-
 });
