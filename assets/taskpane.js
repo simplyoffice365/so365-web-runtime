@@ -22,8 +22,9 @@ Office.onReady(async () => {
         const res = await fetch(FLOW_URL, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
-            },
+  "Content-Type": "application/json",
+  "x-soone-secret": "soone-flow-secret-9F3aD72kXpQe"
+},
             body: JSON.stringify(payload)
         });
 
