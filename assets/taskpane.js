@@ -3,7 +3,14 @@
 Office.onReady(async () => {
 
     // =====================================================
-    // 1️⃣ BASE HELPERS
+    // 1️⃣ CONFIG
+    // =====================================================
+
+    const FLOW_URL =
+        "https://defaultfac171661bfe4c60b923ba2966d401.2f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6e8d35cb0e11480181e62ca97ea6c806/triggers/manual/paths/invoke?api-version=1";
+
+    // =====================================================
+    // 2️⃣ BASE HELPERS
     // =====================================================
 
     function setStatus(text) {
@@ -11,8 +18,8 @@ Office.onReady(async () => {
         if (out) out.textContent = text;
     }
 
-    async function callApi(url, payload) {
-        const res = await fetch(url, {
+    async function callFlow(payload) {
+        const res = await fetch(FLOW_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -25,7 +32,12 @@ Office.onReady(async () => {
             throw new Error(text || res.statusText);
         }
 
-        return res.json();
+        // Search returns JSON, others may not — be defensive
+        try {
+            return await res.json();
+        } catch {
+            return {};
+        }
     }
 
     function getEmailContext() {
@@ -40,7 +52,7 @@ Office.onReady(async () => {
     }
 
     // =====================================================
-    // 2️⃣ UI WIRING
+    // 3️⃣ UI WIRING
     // =====================================================
 
     // ---------- Log Email ----------
@@ -50,8 +62,12 @@ Office.onReady(async () => {
             try {
                 setStatus("Logging email…");
 
-                const payload = getEmailContext();
-                await callApi("/api/email/log", payload);
+                const payload = {
+                    action: "logEmail",
+                    ...getEmailContext()
+                };
+
+                await callFlow(payload);
 
                 setStatus("✅ Email logged");
             } catch (e) {
@@ -67,8 +83,12 @@ Office.onReady(async () => {
             try {
                 setStatus("Creating task…");
 
-                const payload = getEmailContext();
-                await callApi("/api/task/create", payload);
+                const payload = {
+                    action: "createTask",
+                    ...getEmailContext()
+                };
+
+                await callFlow(payload);
 
                 setStatus("✅ Task created");
             } catch (e) {
@@ -100,13 +120,17 @@ Office.onReady(async () => {
 
                 setStatus("Searching…");
 
-                const results = await callApi("/api/socrm/search", {
+                const payload = {
+                    action: "search",
                     entity,
                     searchText
-                });
+                };
+
+                const results = await callFlow(payload);
 
                 resultsDiv.innerHTML = "";
-                results.forEach(r => {
+
+                (results.items || []).forEach(r => {
                     const div = document.createElement("div");
                     div.className = "result";
                     div.textContent = `${r.name} (${r.id})`;
@@ -114,7 +138,7 @@ Office.onReady(async () => {
                     resultsDiv.appendChild(div);
                 });
 
-                setStatus(`Found ${results.length} results`);
+                setStatus(`Found ${(results.items || []).length} results`);
             } catch (e) {
                 setStatus(`❌ ${e.message}`);
             }
