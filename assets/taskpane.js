@@ -7,7 +7,7 @@ Office.onReady(async () => {
     // =====================================================
 
     const FLOW_URL =
-        "https://defaultfac171661bfe4c60b923ba2966d401.2f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6e8d35cb0e11480181e62ca97ea6c806/triggers/manual/paths/invoke?api-version=1";
+        "https://defaultfac171661bfe4c60b923ba2966d401.2f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6e8d35cb0e11480181e62ca97ea6c806/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=okdancPnC9gu0fmB0axTe_Obm28WJW9LG2bgRjdGH-4";
 
     // =====================================================
     // 2️⃣ BASE HELPERS
