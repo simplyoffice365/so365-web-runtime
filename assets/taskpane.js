@@ -149,7 +149,7 @@ Office.onReady(async () => {
     // ---------- Append ID to Subject ----------
     function appendIdToSubject(id) {
         const item = Office.context.mailbox.item;
-        const tag = `[${id}]`;
+        const tag = `(${id})`;
 
         if (!item.subject || !item.subject.getAsync) {
             setStatus("Open a new email to tag the subject.");
